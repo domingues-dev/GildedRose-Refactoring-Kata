@@ -1,55 +1,24 @@
 public class GildedRose {
-  var items: [Item]
+  var items: [GoblinItem]
   
   public init(items: [Item]) {
-    self.items = items
+    self.items = items.map { item -> GoblinItem in
+      switch item.name {
+        case "Sulfuras, Hand of Ragnaros":
+          return SulfurasItem(name: item.name, sellIn: item.sellIn, quality: item.quality)
+        case "Aged Brie":
+          return AgedBrieItem(name: item.name, sellIn: item.sellIn, quality: item.quality)
+        case "Backstage passes to a TAFKAL80ETC concert":
+          return BackStageItem(name: item.name, sellIn: item.sellIn, quality: item.quality)
+        default:
+          return CommonItem(name: item.name, sellIn: item.sellIn, quality: item.quality)
+      }
+    }
   }
   
   public func updateQuality() {
     for item in items {
-      guard item.name != "Sulfuras, Hand of Ragnaros" else { continue }
-      
-      if item.name != "Aged Brie", item.name != "Backstage passes to a TAFKAL80ETC concert" {
-        if item.quality > 0 {
-          item.quality = item.quality - 1
-        }
-      } else {
-        if item.quality < 50 {
-          item.quality = item.quality + 1
-          
-          if item.name == "Backstage passes to a TAFKAL80ETC concert" {
-            if item.sellIn < 11 {
-              if item.quality < 50 {
-                item.quality = item.quality + 1
-              }
-            }
-            
-            if item.sellIn < 6 {
-              if item.quality < 50 {
-                item.quality = item.quality + 1
-              }
-            }
-          }
-        }
-      }
-      
-      item.sellIn = item.sellIn - 1
-      
-      if item.sellIn < 0 {
-        if item.name != "Aged Brie" {
-          if item.name != "Backstage passes to a TAFKAL80ETC concert" {
-            if item.quality > 0 {
-              item.quality = item.quality - 1
-            }
-          } else {
-            item.quality = item.quality - item.quality
-          }
-        } else {
-          if item.quality < 50 {
-            item.quality = item.quality + 1
-          }
-        }
-      }
+      item.updateQuality()
     }
   }
 }
