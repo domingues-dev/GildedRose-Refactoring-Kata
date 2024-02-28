@@ -82,6 +82,19 @@ class GildedRoseTests: XCTestCase {
       sut.updateQuality()
     })
   }
+  
+  func test_updateQualityManaCake_qualityDropsTwiceAsFastAsCommonItems() {
+    let initalQuality: Int = 10
+    let manaCake = Item(name: "Conjured Mana Cake", sellIn: 10, quality: initalQuality)
+    let commonItem = Item(name: "any-item", sellIn: 10, quality: initalQuality)
+    let sut = makeSUT(items: [manaCake, commonItem])
+    assert(sut, expectedName: "Conjured Mana Cake", expectedSellIn: 9, expectedQuality: 8, when: {
+      sut.updateQuality()
+      XCTAssertEqual(commonItem.quality, 9)
+      XCTAssertEqual(manaCake.quality, 8)
+      XCTAssertEqual(initalQuality - manaCake.quality, 2 * (initalQuality - commonItem.quality))
+    })
+  }
 }
 
 // MARK: Helpers
